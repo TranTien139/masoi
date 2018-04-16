@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>Trò chơi ma sói online</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="login">
+<section class="Login">
+    <div class="container">
+        <form onsubmit="return LoginWithName()">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <p id="error-name"></p>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="input_full_name" placeholder="nhập tên của bạn, nhập từ 3-20 kí tự">
+                        <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">gửi</button>
+                    </span>
+                    </div>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </form>
+    </div>
+</section>
+</div>
+
+<section id="main-container">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="box-status">
+                    <p class="title-play">Người chơi</p>
+                    <p><i class="fa fa-circle"></i> Đang chơi</p>
+                    <div class="list-play">
+                        <ul class="list-group list-group-flush" id="item-play">
+                        </ul>
+                    </div>
+                    <p class="engage"><i class="fa fa-circle"></i> Đang chờ</p>
+                    <div class="list-review">
+                        <ul class="list-group list-group-flush" id="item-out">
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-7 box-main-game">
+                <canvas id="my_canvas"></canvas>
+                <div class="auto_scaling" id="auto_scaling"></div>
+                <p id="text-nofifycation">Trần tiến</p>
+            </div>
+            <div class="col-sm-3">
+                <div class="box-chat">
+                    <p class="title-chat">Phòng trò chuyện</p>
+                    <div class="list-chat">
+                        <div class="list-group">
+                            <div id="list-chat"></div>
+                        </div>
+                    </div>
+
+                    <div class="box-content-chat">
+                        <input id="content-chat" type="text" onkeypress="return SendChat(event)" class="form-control" placeholder="Nhập nội dung chat">
+                    </div>
+                    <input type="hidden" id="full-name">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById('main-container').style.display = "none";
+</script>
+
+<script src="socketio/socket.io.js"></script>
+<script src="/js/script.js"></script>
+<script src="/js/game.js"></script>
+<script src="/js/countdown.js"></script>
+</body>
+</html>

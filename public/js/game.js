@@ -1,60 +1,70 @@
-var socket = io();
+function setup(){
+    var canvas = document.getElementById('my_canvas');
+    canvas.width = 800;
+    canvas.height = 630;
+    var context = canvas.getContext('2d');
+    canvas.addEventListener('click', clickReporter, false);
 
-var movement = {
-    up: false,
-    down: false,
-    left: false,
-    right: false
+    var imageObj = new Image();
+
+    imageObj.onload = function() {
+        for (var k=0; k<8; k++) {
+            for (var j=0; j<6; j++) {
+                context.drawImage(imageObj, k*100, j*100);
+            }
+        }
+    };
+    imageObj.src = '/images/background.png';
+
+    var monsterImage = new Image();
+    var number = 10;
+    monsterImage.onload = function () {
+        var num_row = Math.ceil(number/4);
+        var end_num = 1;
+        for (var i=0; i<num_row; i++) {
+            for (var k=0; k < 4; k++){
+                context.drawImage(monsterImage, 150*k + 120, 120*i + 50, 120, 80);
+                context.font = "13pt Roboto";
+                context.fillStyle = '#0000ff';
+                context.fillText("Trần Tiến", 150*k + 140, 120*i + 100);
+
+                context.beginPath();
+                context.moveTo(150*k + 120, 120*i + 50);
+                context.lineTo(150*k + 120 + 120, 120*i + 50 + 80);
+                context.stroke();
+
+                context.fillStyle = '#ff0000';
+                context.font = "18pt Roboto";
+                context.fillText("0", 150*k + 120, 120*i + 50);
+
+                if(end_num === number){
+                    break;
+                    return;
+                }
+                end_num = end_num +1;
+            }
+        }
+    };
+    monsterImage.src = "/images/quan-bai-bi-an.jpg";
+
+};
+
+setup();
+
+
+
+function clickReporter(e) {
+    console.log(e.offsetX,e.offsetY, e);
+
+    // var canvas = document.getElementById('my_canvas');
+    // var context = canvas.getContext('2d');
+    //
+    // context.clearRect(120, 50, 120, 80);
+
+    //
+    // var imageObj1 = new Image();
+    // imageObj1.onload = function() {
+    //      context.drawImage(imageObj1, e.offsetX, e.offsetY);
+    // };
+    // imageObj1.src = './public/images/tho-san.jpg';
 }
-document.addEventListener('keydown', function(event) {
-    switch (event.keyCode) {
-        case 65: // A
-            movement.left = true;
-            break;
-        case 87: // W
-            movement.up = true;
-            break;
-        case 68: // D
-            movement.right = true;
-            break;
-        case 83: // S
-            movement.down = true;
-            break;
-    }
-});
-document.addEventListener('keyup', function(event) {
-    switch (event.keyCode) {
-        case 65: // A
-            movement.left = false;
-            break;
-        case 87: // W
-            movement.up = false;
-            break;
-        case 68: // D
-            movement.right = false;
-            break;
-        case 83: // S
-            movement.down = false;
-            break;
-    }
-});
-
-socket.emit('new player');
-setInterval(function() {
-    socket.emit('movement', movement);
-}, 1000 / 60);
-
-var canvas = document.getElementById('canvas');
-canvas.width = 800;
-canvas.height = 600;
-var context = canvas.getContext('2d');
-socket.on('state', function(players) {
-    context.clearRect(0, 0, 800, 600);
-    context.fillStyle = 'green';
-    for (var id in players) {
-        var player = players[id];
-        context.beginPath();
-        context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
-        context.fill();
-    }
-});

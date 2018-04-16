@@ -1,0 +1,67 @@
+/* width */
+::-webkit-scrollbar {
+  width: 5px; }
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; }
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; }
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; }
+
+.login {
+  padding-top: 20%; }
+  .login p {
+    color: red; }
+
+body {
+  font-size: 14px; }
+
+#main-container .box-status {
+  overflow-y: auto;
+  height: 100%; }
+  #main-container .box-status .title-play {
+    font-size: 20px;
+    border-bottom: 1px solid #ccc;
+    padding: 10px; }
+  #main-container .box-status i {
+    color: darkseagreen; }
+  #main-container .box-status .engage i {
+    color: chocolate; }
+#main-container .box-chat {
+  border: 1px solid #ccc;
+  overflow-y: auto;
+  height: 100%; }
+  #main-container .box-chat .title-chat {
+    font-size: 20px;
+    border-bottom: 1px solid #ccc;
+    padding: 10px; }
+  #main-container .box-chat h5 {
+    font-size: 14px; }
+  #main-container .box-chat .list-chat .list-group {
+    padding-bottom: 50px; }
+#main-container .box-chat .item-chat {
+  padding: 5px 10px 5px 10px; }
+#main-container .box-content-chat {
+  position: fixed;
+  bottom: 0px;
+  width: 23%; }
+#main-container #auto_scaling {
+  position: absolute;
+  bottom: 50px;
+  left: 40%; }
+#main-container #text-nofifycation {
+  position: absolute;
+  bottom: 100px;
+  position: absolute;
+  bottom: 27%;
+  font-size: 18px;
+  color: #fff;
+  padding: 10px 30px; }
+
+/*# sourceMappingURL=style.css.map */

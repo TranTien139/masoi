@@ -14,41 +14,40 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res){
-    res.render('layout',{});
+    res.render('home',{});
 });
 
 var players = {};
 io.on('connection', function(socket) {
-    socket.on('new player', function() {
-        players[socket.id] = {
-            x: 300,
-            y: 300
-        };
-    });
-    socket.on('movement', function(data) {
-        var player = players[socket.id] || {};
-        if (data.left) {
-            player.x -= 5;
-        }
-        if (data.up) {
-            player.y -= 5;
-        }
-        if (data.right) {
-            player.x += 5;
-        }
-        if (data.down) {
-            player.y += 5;
+    socket.on('new player', function(data, callback) {
+        if(data in players){
+            callback(false);
+        } else{
+            callback(true);
+            socket.nickname = data;
+            players[socket.nickname] = socket;
+            updateNickName();
+
         }
     });
 
+    socket.on('chat message', function(data, callback) {
+        io.sockets.emit('new message', data);
+    });
     socket.on('disconnect', function (data) {
-        delete  players[socket.id];
+        if(!socket.nickname) return;
+        delete players[socket.nickname];
+        updateNickName();
     });
 });
 
-setInterval(function() {
-    io.sockets.emit('state', players);
-}, 1000 / 60);
+function updateNickName(){
+    io.sockets.emit('list_player',Object.keys(players));
+}
+
+// setInterval(function() {
+//     io.sockets.emit('state', players);
+// }, 1000 / 60);
 
 server.listen(port, function () {
     console.log('listen port '+ port);
