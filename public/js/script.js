@@ -75,3 +75,7 @@ function FormatTime(hour, minute, second) {
     
 }
 
+function BeginGame() {
+    alert('hello');
+}
+
