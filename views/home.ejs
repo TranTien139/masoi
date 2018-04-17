@@ -38,7 +38,7 @@
             <div class="col-sm-2">
                 <div class="box-status">
 
-                    <p class="title-play">Người chơi <a onclick="BeginGame()" style="cursor: pointer; color: red; font-size: 14px;">Bắt đầu <i class="fa fa-angle-double-right"></i></a></p>
+                    <p class="title-play" id="title-play"><a onclick="BeginGame()" style="cursor: pointer; color: red; font-size: 14px;">Bắt đầu <i class="fa fa-angle-double-right"></i></a></p>
 
                     <p><i class="fa fa-circle"></i> Đang chơi</p>
                     <div class="list-play">
@@ -56,7 +56,7 @@
             <div class="col-sm-7 box-main-game">
                 <canvas id="my_canvas"></canvas>
                 <div class="auto_scaling" id="auto_scaling"></div>
-                <p id="text-nofifycation">Trần tiến</p>
+                <div id="text-nofifycation"></div>
             </div>
             <div class="col-sm-3">
                 <div class="box-chat">

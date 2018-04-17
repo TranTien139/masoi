@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
 });
 
 function updateNickName(){
-    io.sockets.emit('list_player',Object.keys(players));
+    io.sockets.emit('list_player', Object.keys(players));
 }
 
 // setInterval(function() {

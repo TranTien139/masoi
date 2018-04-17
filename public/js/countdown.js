@@ -1,8 +1,8 @@
-setInterval(function () {
-    document.getElementById('auto_scaling').insertAdjacentHTML('beforeend','<canvas id="countdown"></canvas>');
-    var t = new Timer(document.getElementById('countdown'));
-    t.timerRun();
-}, 30*1000);
+// setInterval(function () {
+//     document.getElementById('auto_scaling').insertAdjacentHTML('beforeend','<canvas id="countdown"></canvas>');
+//     var t = new Timer(document.getElementById('countdown'));
+//     t.timerRun();
+// }, 30*1000);
 
 
 function Timer(el) {
@@ -81,7 +81,9 @@ Timer.prototype.timerRun = function () {
     var self = this;
     if (self.TIME_ELAPSED >= self.TIMER_DURATION){
         document.getElementById('auto_scaling').innerHTML = '';
-        return false;}
+        GLOBAL_CHOOSE = 0;
+        return false;
+    }
     if (!self.lastRender) self.lastRender = Date.now();
     var delta = Date.now() - self.lastRender;
     // Trick to throttle FPS
@@ -90,4 +92,20 @@ Timer.prototype.timerRun = function () {
         self.lastRender = self.render();
     }
     requestAnimationFrame(self.timerRun.bind(self));
+}
+
+function RunTimeCountDown(delay_time) {
+    document.getElementById('auto_scaling').insertAdjacentHTML('beforeend','<canvas id="countdown"></canvas>');
+    var t = new Timer(document.getElementById('countdown'));
+    t.TIMER_DURATION = delay_time;
+    t.timerRun();
+}
+
+// RunTimeCountDown(300000000);
+
+function InPlayGame(){
+    if(GLOBAL_CHOOSE === 0) {
+        RunTimeCountDown(30000);
+        GLOBAL_CHOOSE = 1;
+    }
 }

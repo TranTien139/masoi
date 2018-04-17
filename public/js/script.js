@@ -1,4 +1,9 @@
 var socket = io();
+var GLOBAL_CHOOSE = 0;
+var GLOBAL_MAIN_PLAYER = [];
+var GLOBAL_LAT_LONG = [];
+
+var GLOBAL_PLAYER = [];
 
 function LoginWithName(){
     var full_name = document.getElementById('input_full_name').value;
@@ -14,8 +19,10 @@ function LoginWithName(){
     return false;
 }
 
+
 socket.on('list_player', function(data){
     document.getElementById('item-play').innerHTML = '';
+    GLOBAL_PLAYER = data;
     for (var i=0; i< data.length; i++) {
         UpdatePeoplePlay(data[i]);
     }
@@ -73,9 +80,5 @@ function FormatTime(hour, minute, second) {
 
    return hour + ': ' + minute + ': ' + second;
     
-}
-
-function BeginGame() {
-    alert('hello');
 }
 
