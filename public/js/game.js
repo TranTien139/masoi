@@ -62,11 +62,9 @@ function setup() {
             }
         }
     });
-
 };
 
 setup();
-
 function loadImages(sources, callback) {
     var images = {};
     var loadedImages = 0;
