@@ -24,7 +24,7 @@ function setup() {
         baove: '/images/bao-ve.jpg',
         danlang: '/images/dan-lang.jpg',
         kethoisao: '/images/ke-thoi-sao.jpg',
-        gialang: '/images/gia-lang.jpg',
+        gialang: '/images/gia-lang1.jpg',
         masoi: '/images/ma-soi.png',
         phuthuy: '/images/phu-thuy.jpg',
         quanbaibian: '/images/quan-bai-bi-an.jpg',
