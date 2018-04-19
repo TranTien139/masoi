@@ -1,9 +1,18 @@
 var socket = io();
-var GLOBAL_CHOOSE = 0;
-var GLOBAL_MAIN_PLAYER = [];
-var GLOBAL_LAT_LONG = [];
 
-var GLOBAL_PLAYER = [];
+var GLOBAL_CHOOSE = 0;  // check thời điểm được chọn
+var GLOBAL_MAIN_PLAYER = []; // danh sách người chơi chính
+var GLOBAL_LAT_LONG = [];  // tạo dộ chọn các nhân vật
+var GLOBAL_PLAYER_CHOOSE = {}; // các lựa chọn của user
+var GLOBAL_USER_LOGIN = "";  // tên của user đang đăng nhập
+var GLOBAL_NIGHT_DAY = 'NIGHT';
+
+var GLOBAL_PLAYER = []; // các palyer đăng nhập vào hệ thống
+var IS_WEREWOLF = false;  // là ma soi hay không
+var GLOBAL_PLAYER_DIE = [];
+var GLOBAL_PLAYER_LIVE = [];
+var IS_SELECT_BY_USER = 1;  // user đã chọn chưa, giá trị 1 là đã chọn
+var IS_FINISH = false;
 
 function LoginWithName(){
     var full_name = document.getElementById('input_full_name').value;
@@ -12,6 +21,7 @@ function LoginWithName(){
             document.getElementById('login').innerHTML = "";
             document.getElementById('main-container').style.display = "block";
             document.getElementById('full-name').value = full_name;
+            GLOBAL_USER_LOGIN = full_name;  // lưu tên của user đăng nhập
         });
     } else {
         document.getElementById('error-name').innerHTML = '* Bạn phải nhập tên trong khoảng 3-20 kí tự';
@@ -81,4 +91,12 @@ function FormatTime(hour, minute, second) {
    return hour + ': ' + minute + ': ' + second;
     
 }
+
+function DrawText(text) {
+    document.getElementById('text-nofifycation').innerHTML = text;
+};
+
+function ClearText() {
+    document.getElementById('text-nofifycation').innerHTML = '';
+};
 

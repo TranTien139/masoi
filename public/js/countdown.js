@@ -82,6 +82,54 @@ Timer.prototype.timerRun = function () {
     if (self.TIME_ELAPSED >= self.TIMER_DURATION){
         document.getElementById('auto_scaling').innerHTML = '';
         GLOBAL_CHOOSE = 0;
+        IS_SELECT_BY_USER = 1;
+
+        var max_select = 0;
+        var charater_select = "";
+
+        Object.keys(GLOBAL_PLAYER_CHOOSE).map(function (obj) {
+            if(GLOBAL_PLAYER_CHOOSE[obj].length > max_select){
+                max_select = GLOBAL_PLAYER_CHOOSE[obj].length;
+                charater_select = obj;
+            }
+        });
+
+        GLOBAL_PLAYER_DIE.push(charater_select);
+
+        GLOBAL_PLAYER_LIVE = GLOBAL_PLAYER_LIVE.filter(function (obj) {
+           return  obj.user !== charater_select;
+        });
+
+        GLOBAL_PLAYER_CHOOSE = {};
+
+        var sosoiconlai = GLOBAL_PLAYER_LIVE.filter(function (obj) {
+            return  obj.charater === 'masoi';
+        });
+
+        if(GLOBAL_PLAYER_LIVE.length - 2 * sosoiconlai.length <= 0){
+            alert('Trò chơi kết thúc, bên sói thắng');
+            IS_FINISH = true;
+        }
+
+        if(sosoiconlai.length === 0){
+            alert('Trò chơi kết thúc, bên đân thắng');
+            IS_FINISH = true;
+        }
+
+        setup(GLOBAL_MAIN_PLAYER);
+
+        console.log(charater_select, max_select);
+
+        if(GLOBAL_NIGHT_DAY === 'NIGHT'){
+            ClearText();
+            DrawText('Thời gian ban gày thảo luận của người dân');
+            GLOBAL_NIGHT_DAY = 'DAY';
+        } else {
+            ClearText();
+            DrawText('Thời gian buổi tối, thời gian thảo luận của sói');
+            GLOBAL_NIGHT_DAY = 'NIGHT';
+        }
+
         return false;
     }
     if (!self.lastRender) self.lastRender = Date.now();
@@ -101,11 +149,97 @@ function RunTimeCountDown(delay_time) {
     t.timerRun();
 }
 
-// RunTimeCountDown(300000000);
-
 function InPlayGame(){
-    if(GLOBAL_CHOOSE === 0) {
-        RunTimeCountDown(30000);
+    if(GLOBAL_CHOOSE === 0 && IS_FINISH === false) {
+
+        if(GLOBAL_NIGHT_DAY === 'DAY'){
+
+                IS_SELECT_BY_USER = 0;
+                var list_id_werewolf = [];
+
+                for(var j=0; j < GLOBAL_PLAYER_LIVE.length; j++){
+                    if(GLOBAL_PLAYER_LIVE[j].charater === 'masoi'){
+                        list_id_werewolf.push(j);
+                    }
+                }
+
+                for(var k=0; k < GLOBAL_PLAYER_LIVE.length; k++){
+                    if(GLOBAL_PLAYER_LIVE[k].user === GLOBAL_USER_LOGIN) {
+                        if (GLOBAL_PLAYER_LIVE[k].charater !== 'masoi') {
+                            var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, [k]);
+                            if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
+                            } else {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
+                            }
+                        } else {
+                            var except = [k].concat(list_id_werewolf);
+                            var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, except);
+                            if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
+                            } else {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
+                            }
+                        }
+                    }
+                }
+        }
+
+        if(GLOBAL_NIGHT_DAY === 'NIGHT'){
+            if(IS_WEREWOLF !== true){
+                var list_id_werewolf = [];
+                for(var j=0; j < GLOBAL_PLAYER_LIVE.length; j++){
+                    if(GLOBAL_PLAYER_LIVE[j].charater === 'masoi'){
+                        list_id_werewolf.push(j);
+                    }
+                }
+
+                var except = list_id_werewolf;
+                for(var k=0; k < GLOBAL_PLAYER_LIVE.length; k++){
+                    if(GLOBAL_PLAYER_LIVE[k].charater === 'masoi') {
+                        var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, except);
+                        if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
+                            GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
+                        } else {
+                            GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
+                        }
+                    }
+                }
+            } else {
+                IS_SELECT_BY_USER = 0;
+
+                var list_id_werewolf = [];
+                for(var j=0; j < GLOBAL_PLAYER_LIVE.length; j++){
+                    if(GLOBAL_PLAYER_LIVE[j].charater === 'masoi'){
+                        list_id_werewolf.push(j);
+                    }
+                }
+
+                var except = list_id_werewolf;
+                for(var k=0; k < GLOBAL_PLAYER_LIVE.length; k++){
+                        if(GLOBAL_PLAYER_LIVE[k].user !== GLOBAL_USER_LOGIN && GLOBAL_PLAYER_LIVE[k].charater === 'masoi') {
+                            var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, except);
+                            if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
+                            } else {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
+                            }
+                        }
+                }
+            }
+        }
+        console.log(GLOBAL_PLAYER_CHOOSE);
+
+        RunTimeCountDown(15000);
         GLOBAL_CHOOSE = 1;
     }
+
+    if(IS_FINISH === true){
+        alert('Trò chơi đã kết thúc bạn không thể tiếp tục lại');
+    }
+}
+
+function generateRandom(min, max, except) {
+    var num = Math.floor(Math.random() * (max - min)) + min;
+    return (except.indexOf(num) !== -1) ? generateRandom(min, max, except) : num;
 }

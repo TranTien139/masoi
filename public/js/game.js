@@ -32,35 +32,68 @@ function setup(array_player) {
         tientri: '/images/tien-tri.jpg'
     };
 
+    document.getElementById('my_canvas').innerHTML = '';
+
+    var arr_cungmasoi = [];
+    if (IS_WEREWOLF === true) {
+        for (var h = 0; h < GLOBAL_PLAYER_LIVE.length; h++) {
+            if (GLOBAL_PLAYER_LIVE[h].charater === 'masoi') {
+                arr_cungmasoi.push(GLOBAL_PLAYER_LIVE[h].user);
+            }
+        }
+    }
+
     loadImages(sources, function (images) {
-
-        // var arr = Object.keys(images).map(function (key) {
-        //     return images[key];
-        // });
-        // var num_row = Math.ceil(number / 4);
-
         var end_num = 1;
         for (var i = 0; i < 4; i++) {
             for (var k = 0; k < 4; k++) {
                 var key = i * 4 + k;
 
-                if(array_player[key]) {
+                if (array_player[key]) {
                     var full_image_draw = array_player[key].charater;
                     var full_name_draw = array_player[key].user;
 
-                    context.drawImage(images[full_image_draw], 150 * k + 120, 120 * i + 50, 120, 80);
-                    context.font = "13pt Roboto";
-                    context.fillStyle = '#0000ff';
-                    context.fillText(full_name_draw, 150 * k + 130, 120 * i + 100);
+                    if (GLOBAL_PLAYER_DIE.indexOf(full_name_draw) !== -1 || IS_FINISH === true) {
 
-                    // context.beginPath();
-                    // context.moveTo(150 * k + 120, 120 * i + 50);
-                    // context.lineTo(150 * k + 120 + 120, 120 * i + 50 + 80);
-                    // context.stroke();
-                    //
-                    // context.fillStyle = '#ff0000';
-                    // context.font = "18pt Roboto";
-                    // context.fillText("0", 150 * k + 120, 120 * i + 50);
+                        context.drawImage(images[full_image_draw], 150 * k + 120, 120 * i + 50, 120, 80);
+                        context.font = "13pt Roboto";
+                        context.fillStyle = '#0000ff';
+                        context.fillText(full_name_draw, 150 * k + 130, 120 * i + 100);
+
+                        context.beginPath();
+                        context.moveTo(150 * k + 120, 120 * i + 50);
+                        context.lineTo(150 * k + 120 + 120, 120 * i + 50 + 80);
+                        context.stroke();
+
+                    } else {
+                        if (full_name_draw === GLOBAL_USER_LOGIN) {
+                            context.drawImage(images[full_image_draw], 150 * k + 120, 120 * i + 50, 120, 80);
+                            context.font = "13pt Roboto";
+                            context.fillStyle = '#0000ff';
+                            context.fillText(full_name_draw, 150 * k + 130, 120 * i + 100);
+
+                            // context.beginPath();
+                            // context.moveTo(150 * k + 120, 120 * i + 50);
+                            // context.lineTo(150 * k + 120 + 120, 120 * i + 50 + 80);
+                            // context.stroke();
+                            //
+                            // context.fillStyle = '#ff0000';
+                            // context.font = "18pt Roboto";
+                            // context.fillText("0", 150 * k + 120, 120 * i + 50);
+                        } else {
+                            if (IS_WEREWOLF === true && arr_cungmasoi.indexOf(full_name_draw) !== -1) {
+                                context.drawImage(images[full_image_draw], 150 * k + 120, 120 * i + 50, 120, 80);
+                                context.font = "13pt Roboto";
+                                context.fillStyle = '#0000ff';
+                                context.fillText(full_name_draw, 150 * k + 130, 120 * i + 100);
+                            } else {
+                                context.drawImage(images['quanbaibian'], 150 * k + 120, 120 * i + 50, 120, 80);
+                                context.font = "13pt Roboto";
+                                context.fillStyle = '#0000ff';
+                                context.fillText(full_name_draw, 150 * k + 130, 120 * i + 100);
+                            }
+                        }
+                    }
 
                     if (end_num === number) {
                         break;
@@ -93,14 +126,6 @@ function DrawBackGround() {
     imageObj.src = '/images/background.png';
 };
 
-function DrawText(text) {
-    document.getElementById('text-nofifycation').innerHTML = text;
-};
-
-function ClearText() {
-    document.getElementById('text-nofifycation').innerHTML = '';
-};
-
 function loadImages(sources, callback) {
     var images = {};
     var loadedImages = 0;
@@ -120,43 +145,58 @@ function loadImages(sources, callback) {
 }
 
 function clickReporter(e) {
-    if(GLOBAL_CHOOSE !== 0){
-        if(GLOBAL_LAT_LONG.length ===0) {
-            for (var i = 0; i < 4; i++) {
-                for (var k = 0; k < 4; k++) {
-                    var key = i * 4 + k;
-                    if (GLOBAL_MAIN_PLAYER[key]) {
-                        var full_name_draw = GLOBAL_MAIN_PLAYER[key].user;
-                        var obj_latlong = {
-                            name: full_name_draw,
-                            A: {x: 150 * k + 120, y: 120 * i + 50},
-                            B: {x: 150 * k + 120 + 120, y: 120 * i + 50 + 80}
-                        };
-                        GLOBAL_LAT_LONG.push(obj_latlong);
-                    }
+
+    if (GLOBAL_LAT_LONG.length === 0) {
+        for (var i = 0; i < 4; i++) {
+            for (var k = 0; k < 4; k++) {
+                var key = i * 4 + k;
+                if (GLOBAL_MAIN_PLAYER[key]) {
+                    var full_name_draw = GLOBAL_MAIN_PLAYER[key].user;
+                    var obj_latlong = {
+                        name: full_name_draw,
+                        A: {x: 150 * k + 120, y: 120 * i + 50},
+                        B: {x: 150 * k + 120 + 120, y: 120 * i + 50 + 80}
+                    };
+                    GLOBAL_LAT_LONG.push(obj_latlong);
                 }
             }
         }
+    }
 
-        var check = GLOBAL_LAT_LONG.filter(function (object) {
-            return (object.A.x <= e.offsetX && object.B.x >= e.offsetX && object.A.y <= e.offsetY&& object.B.y >= e.offsetY)
-        });
+    var check = GLOBAL_LAT_LONG.filter(function (object) {
+        return (object.A.x <= e.offsetX && object.B.x >= e.offsetX && object.A.y <= e.offsetY && object.B.y >= e.offsetY)
+    });
 
-        if(check.length >0){
-            alert(check[0].name);
+    if (GLOBAL_CHOOSE !== 0 && IS_SELECT_BY_USER === 0 && GLOBAL_PLAYER_DIE.indexOf(GLOBAL_USER_LOGIN) === -1) {
+
+        if (check.length > 0) {
+            var name = check[0].name;
+            if (GLOBAL_PLAYER_CHOOSE[name] === undefined) {
+                GLOBAL_PLAYER_CHOOSE[name] = [GLOBAL_USER_LOGIN];
+                IS_SELECT_BY_USER = 1;
+            } else {
+                GLOBAL_PLAYER_CHOOSE[name].push(GLOBAL_USER_LOGIN);
+                IS_SELECT_BY_USER = 1;
+            }
+            alert('Bạn đã chọn: ' + name);
+            return false;
+        }
+    } else {
+        if (check.length > 0) {
+            if (GLOBAL_CHOOSE === 0) {
+                alert('Chưa phải thời điểm để chọn');
+            } else if (IS_SELECT_BY_USER === 1) {
+                if (GLOBAL_NIGHT_DAY === 'NIGHT' && IS_WEREWOLF !== true) {
+                    alert('Bạn không được chọn thời điểm ban đêm');
+                } else {
+                    alert('Bạn không thể chọn');
+                }
+
+            } else if (GLOBAL_PLAYER_DIE.indexOf(GLOBAL_USER_LOGIN) !== -1) {
+                alert('Bạn die rồi nên không được chọn nữa');
+            }
         }
     }
-    // var canvas = document.getElementById('my_canvas');
-    // var context = canvas.getContext('2d');
-    //
-    // context.clearRect(120, 50, 120, 80);
-
-    //
-    // var imageObj1 = new Image();
-    // imageObj1.onload = function() {
-    //      context.drawImage(imageObj1, e.offsetX, e.offsetY);
-    // };
-    // imageObj1.src = './public/images/tho-san.jpg';
 }
 
 var html = "Với mỗi một ván chơi mà sói đều yêu cầu số người chơi nhất định từ 8 – 23 người, với số người chơi càng lớn thì đố khó và thời gian của game càng gia tăng. Thông thường, với số người chơi từ 10 -15 người là phù hợp nhất cho một ván chơi hấp dẫn."
@@ -185,14 +225,9 @@ var html = "Với mỗi một ván chơi mà sói đều yêu cầu số ngườ
 
     + " Với mỗi ván game ma sói cần có một quản trò để điều hành cuộc chơi.";
 
-// DrawText(html);
+
 DrawBackGround();
-
-
-// setTimeout(function () {
-//     ClearText();
-//     DrawBackGround();
-// }, 15 * 1000);
+DrawText('Bấm vào nút bắt đầu để than gia chơi');
 
 var setupPlayer = ['baove', 'thosan', 'tientri', 'thantinhyeu', 'masoi', 'masoi', 'masoi', 'danlang', 'danlang', 'danlang', 'danlang', 'danlang'];
 
@@ -206,12 +241,18 @@ function BeginGame() {
     GLOBAL_PLAYER.map(function (obj) {
         var len = setupPlayer.length;
         var ran = Math.floor(Math.random() * len);
-        var ddd = {"charater": setupPlayer[ran] , "user": obj}
+        var ddd = {"charater": setupPlayer[ran], "user": obj}
+        if (obj === GLOBAL_USER_LOGIN && setupPlayer[ran] === 'masoi') {
+            IS_WEREWOLF = true;
+            IS_SELECT_BY_USER = 0;
+        }
         results.push(ddd);
-        setupPlayer.splice(ran,1);
+        setupPlayer.splice(ran, 1);
     });
     GLOBAL_MAIN_PLAYER = results;
+    GLOBAL_PLAYER_LIVE = results;
     ClearText();
-    document.getElementById('title-play').innerHTML='<a onclick="InPlayGame()" style="cursor: pointer; color: red; font-size: 14px;">Tiếp theo<i class="fa fa-angle-double-right"></i></a>';
+    document.getElementById('title-play').innerHTML = '<a onclick="InPlayGame()" style="cursor: pointer; color: red; font-size: 14px;">Tiếp theo<i class="fa fa-angle-double-right"></i></a>';
+    DrawText('Thời gian buổi tối, thời gian thảo luận của sói');
     setup(results);
 }
