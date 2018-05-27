@@ -22,7 +22,7 @@ io.on('connection', function(socket) {
     socket.on('new player', function(data, callback) {
         if(data in players){
             callback(false);
-        } else{
+        } else {
             callback(true);
             socket.nickname = data;
             players[socket.nickname] = socket;
@@ -34,6 +34,15 @@ io.on('connection', function(socket) {
     socket.on('chat message', function(data, callback) {
         io.sockets.emit('new message', data);
     });
+
+    socket.on('begin play', function (data, callback) {
+        io.sockets.emit('begin play', data);
+    });
+
+    socket.on('count down',function (data, callback) {
+        io.sockets.emit('count down', {});
+    });
+
     socket.on('disconnect', function (data) {
         if(!socket.nickname) return;
         delete players[socket.nickname];

@@ -251,8 +251,19 @@ function BeginGame() {
     });
     GLOBAL_MAIN_PLAYER = results;
     GLOBAL_PLAYER_LIVE = results;
+    socket.emit('begin play', results, function (data) {
+    });
+}
+
+socket.on('begin play', function (data) {
+    updateStateGame(data);
+});
+
+function updateStateGame(results) {
     ClearText();
-    document.getElementById('title-play').innerHTML = '<a onclick="InPlayGame()" style="cursor: pointer; color: red; font-size: 14px;">Tiếp theo<i class="fa fa-angle-double-right"></i></a>';
+    if(GLOBAL_PLAYER[0] === GLOBAL_USER_LOGIN.trim()) {
+        document.getElementById('title-play').innerHTML = '<a onclick="InPlayGame_socket()" style="cursor: pointer; color: red; font-size: 14px;">Tiếp theo<i class="fa fa-angle-double-right"></i></a>';
+    }
     DrawText('Thời gian buổi tối, thời gian thảo luận của sói');
     setup(results);
 }

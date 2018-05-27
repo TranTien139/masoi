@@ -118,8 +118,6 @@ Timer.prototype.timerRun = function () {
 
         setup(GLOBAL_MAIN_PLAYER);
 
-        console.log(charater_select, max_select);
-
         if(GLOBAL_NIGHT_DAY === 'NIGHT'){
             ClearText();
             DrawText('Thời gian ban gày thảo luận của người dân');
@@ -228,8 +226,6 @@ function InPlayGame(){
                 }
             }
         }
-        console.log(GLOBAL_PLAYER_CHOOSE);
-
         RunTimeCountDown(15000);
         GLOBAL_CHOOSE = 1;
     }
@@ -238,6 +234,18 @@ function InPlayGame(){
         alert('Trò chơi đã kết thúc bạn không thể tiếp tục lại');
     }
 }
+
+function InPlayGame_socket() {
+    socket.emit('count down',{},function () {
+    });
+}
+
+
+socket.on('count down', function (data) {
+    InPlayGame();
+});
+
+
 
 function generateRandom(min, max, except) {
     var num = Math.floor(Math.random() * (max - min)) + min;

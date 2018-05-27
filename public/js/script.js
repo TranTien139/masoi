@@ -17,22 +17,32 @@ var IS_FINISH = false;
 function LoginWithName(){
     var full_name = document.getElementById('input_full_name').value;
     if(full_name.length >=3 && full_name.length <=20){
-        socket.emit('new player', full_name, function(data){
-            document.getElementById('login').innerHTML = "";
-            document.getElementById('main-container').style.display = "block";
-            document.getElementById('full-name').value = full_name;
-            GLOBAL_USER_LOGIN = full_name;  // lưu tên của user đăng nhập
-        });
+        if(GLOBAL_PLAYER.indexOf(full_name.trim()) === -1) {
+            socket.emit('new player', full_name, function (data) {
+                document.getElementById('login').innerHTML = "";
+                document.getElementById('main-container').style.display = "block";
+                document.getElementById('full-name').value = full_name;
+                GLOBAL_USER_LOGIN = full_name;  // lưu tên của user đăng nhập
+            });
+        } else {
+            document.getElementById('error-name').innerHTML = '* Bạn nhập trùng tên';
+        }
     } else {
         document.getElementById('error-name').innerHTML = '* Bạn phải nhập tên trong khoảng 3-20 kí tự';
     }
+
     return false;
 }
-
 
 socket.on('list_player', function(data){
     document.getElementById('item-play').innerHTML = '';
     GLOBAL_PLAYER = data;
+    if(GLOBAL_PLAYER[0] === GLOBAL_USER_LOGIN.trim()){
+        document.getElementById('title-play').innerHTML = '<a onclick="BeginGame()" style="cursor: pointer; color: red; font-size: 14px;">Bắt đầu <i class="fa fa-angle-double-right"></i></a>';
+    } else {
+        document.getElementById('title-play').innerHTML = '';
+    }
+
     for (var i=0; i< data.length; i++) {
         UpdatePeoplePlay(data[i]);
     }
