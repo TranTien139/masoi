@@ -178,6 +178,8 @@ function clickReporter(e) {
                 GLOBAL_PLAYER_CHOOSE[name].push(GLOBAL_USER_LOGIN);
                 IS_SELECT_BY_USER = 1;
             }
+            
+            socket.emit('player choose',{name: name, user: GLOBAL_USER_LOGIN}, function (value) {});
             alert('Bạn đã chọn: ' + name);
             return false;
         }
@@ -249,13 +251,13 @@ function BeginGame() {
         results.push(ddd);
         setupPlayer.splice(ran, 1);
     });
-    GLOBAL_MAIN_PLAYER = results;
-    GLOBAL_PLAYER_LIVE = results;
     socket.emit('begin play', results, function (data) {
     });
 }
 
 socket.on('begin play', function (data) {
+    GLOBAL_MAIN_PLAYER = data;
+    GLOBAL_PLAYER_LIVE = data;
     updateStateGame(data);
 });
 

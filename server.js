@@ -43,6 +43,18 @@ io.on('connection', function(socket) {
         io.sockets.emit('count down', {});
     });
 
+    socket.on('ramdom choose', function (data, callback) {
+        io.sockets.emit('ramdom choose', data);
+    });
+
+    socket.on('player choose', function (name, callback) {
+        io.sockets.emit('player choose', name);
+    });
+
+    socket.on('player-live-die', function (name, callback) {
+        io.sockets.emit('player-live-die', name);
+    });
+
     socket.on('disconnect', function (data) {
         if(!socket.nickname) return;
         delete players[socket.nickname];

@@ -100,6 +100,8 @@ Timer.prototype.timerRun = function () {
            return  obj.user !== charater_select;
         });
 
+        socket.emit('player-live-die', {'live': GLOBAL_PLAYER_LIVE, 'die': GLOBAL_PLAYER_DIE}, function () {});
+
         GLOBAL_PLAYER_CHOOSE = {};
 
         var sosoiconlai = GLOBAL_PLAYER_LIVE.filter(function (obj) {
@@ -150,19 +152,20 @@ function RunTimeCountDown(delay_time) {
 function InPlayGame(){
     if(GLOBAL_CHOOSE === 0 && IS_FINISH === false) {
 
-        if(GLOBAL_NIGHT_DAY === 'DAY'){
+        if(GLOBAL_PLAYER[0] === GLOBAL_USER_LOGIN.trim()) {
+            if (GLOBAL_NIGHT_DAY === 'DAY') {
 
                 IS_SELECT_BY_USER = 0;
                 var list_id_werewolf = [];
 
-                for(var j=0; j < GLOBAL_PLAYER_LIVE.length; j++){
-                    if(GLOBAL_PLAYER_LIVE[j].charater === 'masoi'){
+                for (var j = 0; j < GLOBAL_PLAYER_LIVE.length; j++) {
+                    if (GLOBAL_PLAYER_LIVE[j].charater === 'masoi') {
                         list_id_werewolf.push(j);
                     }
                 }
 
-                for(var k=0; k < GLOBAL_PLAYER_LIVE.length; k++){
-                    if(GLOBAL_PLAYER_LIVE[k].user === GLOBAL_USER_LOGIN) {
+                for (var k = 0; k < GLOBAL_PLAYER_LIVE.length; k++) {
+                    if (GLOBAL_PLAYER_LIVE[k].user === GLOBAL_USER_LOGIN) {
                         if (GLOBAL_PLAYER_LIVE[k].charater !== 'masoi') {
                             var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, [k]);
                             if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
@@ -181,41 +184,20 @@ function InPlayGame(){
                         }
                     }
                 }
-        }
+            }
 
-        if(GLOBAL_NIGHT_DAY === 'NIGHT'){
-            if(IS_WEREWOLF !== true){
-                var list_id_werewolf = [];
-                for(var j=0; j < GLOBAL_PLAYER_LIVE.length; j++){
-                    if(GLOBAL_PLAYER_LIVE[j].charater === 'masoi'){
-                        list_id_werewolf.push(j);
-                    }
-                }
-
-                var except = list_id_werewolf;
-                for(var k=0; k < GLOBAL_PLAYER_LIVE.length; k++){
-                    if(GLOBAL_PLAYER_LIVE[k].charater === 'masoi') {
-                        var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, except);
-                        if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
-                            GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
-                        } else {
-                            GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
+            if (GLOBAL_NIGHT_DAY === 'NIGHT') {
+                if (IS_WEREWOLF !== true) {
+                    var list_id_werewolf = [];
+                    for (var j = 0; j < GLOBAL_PLAYER_LIVE.length; j++) {
+                        if (GLOBAL_PLAYER_LIVE[j].charater === 'masoi') {
+                            list_id_werewolf.push(j);
                         }
                     }
-                }
-            } else {
-                IS_SELECT_BY_USER = 0;
 
-                var list_id_werewolf = [];
-                for(var j=0; j < GLOBAL_PLAYER_LIVE.length; j++){
-                    if(GLOBAL_PLAYER_LIVE[j].charater === 'masoi'){
-                        list_id_werewolf.push(j);
-                    }
-                }
-
-                var except = list_id_werewolf;
-                for(var k=0; k < GLOBAL_PLAYER_LIVE.length; k++){
-                        if(GLOBAL_PLAYER_LIVE[k].user !== GLOBAL_USER_LOGIN && GLOBAL_PLAYER_LIVE[k].charater === 'masoi') {
+                    var except = list_id_werewolf;
+                    for (var k = 0; k < GLOBAL_PLAYER_LIVE.length; k++) {
+                        if (GLOBAL_PLAYER_LIVE[k].charater === 'masoi') {
                             var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, except);
                             if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
                                 GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
@@ -223,8 +205,32 @@ function InPlayGame(){
                                 GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
                             }
                         }
+                    }
+                } else {
+                    IS_SELECT_BY_USER = 0;
+
+                    var list_id_werewolf = [];
+                    for (var j = 0; j < GLOBAL_PLAYER_LIVE.length; j++) {
+                        if (GLOBAL_PLAYER_LIVE[j].charater === 'masoi') {
+                            list_id_werewolf.push(j);
+                        }
+                    }
+
+                    var except = list_id_werewolf;
+                    for (var k = 0; k < GLOBAL_PLAYER_LIVE.length; k++) {
+                        if (GLOBAL_PLAYER_LIVE[k].user !== GLOBAL_USER_LOGIN && GLOBAL_PLAYER_LIVE[k].charater === 'masoi') {
+                            var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, except);
+                            if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] = [GLOBAL_PLAYER_LIVE[k].user];
+                            } else {
+                                GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user].push(GLOBAL_PLAYER_LIVE[k].user);
+                            }
+                        }
+                    }
                 }
             }
+            socket.emit('ramdom choose',GLOBAL_PLAYER_CHOOSE,function () {
+            });
         }
         RunTimeCountDown(15000);
         GLOBAL_CHOOSE = 1;
@@ -245,6 +251,23 @@ socket.on('count down', function (data) {
     InPlayGame();
 });
 
+socket.on('ramdom choose', function (data) {
+    GLOBAL_PLAYER_CHOOSE = data;
+});
+
+socket.on('player choose', function (obj) {
+    if(GLOBAL_PLAYER_CHOOSE[obj.name] === undefined){
+        GLOBAL_PLAYER_CHOOSE[obj.name] === [obj.user];
+    } else {
+        GLOBAL_PLAYER_CHOOSE[obj.name].push(obj.user);
+    }
+});
+
+socket.on('player-live-die', function (obj) {
+     GLOBAL_PLAYER_DIE = obj.die;
+     GLOBAL_PLAYER_LIVE = obj.live;
+    console.log(GLOBAL_PLAYER_CHOOSE,GLOBAL_PLAYER_DIE, GLOBAL_PLAYER_LIVE);
+});
 
 
 function generateRandom(min, max, except) {

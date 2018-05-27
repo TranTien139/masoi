@@ -5,14 +5,14 @@ var GLOBAL_MAIN_PLAYER = []; // danh sách người chơi chính
 var GLOBAL_LAT_LONG = [];  // tạo dộ chọn các nhân vật
 var GLOBAL_PLAYER_CHOOSE = {}; // các lựa chọn của user
 var GLOBAL_USER_LOGIN = "";  // tên của user đang đăng nhập
-var GLOBAL_NIGHT_DAY = 'NIGHT';
+var GLOBAL_NIGHT_DAY = 'NIGHT'; // thời điểm hiện tại
 
 var GLOBAL_PLAYER = []; // các palyer đăng nhập vào hệ thống
 var IS_WEREWOLF = false;  // là ma soi hay không
-var GLOBAL_PLAYER_DIE = [];
-var GLOBAL_PLAYER_LIVE = [];
+var GLOBAL_PLAYER_DIE = []; // các user còn hoạt động
+var GLOBAL_PLAYER_LIVE = []; //các user đã die
 var IS_SELECT_BY_USER = 1;  // user đã chọn chưa, giá trị 1 là đã chọn
-var IS_FINISH = false;
+var IS_FINISH = false;  // check đã login chưa
 
 function LoginWithName(){
     var full_name = document.getElementById('input_full_name').value;
