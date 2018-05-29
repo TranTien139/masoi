@@ -252,6 +252,9 @@ socket.on('count down', function (data) {
 socket.on('ramdom choose', function (data) {
     GLOBAL_CHOOSE = 1;
     GLOBAL_PLAYER_CHOOSE = data;
+    if (GLOBAL_NIGHT_DAY === 'DAY' && GLOBAL_PLAYER[0] !== GLOBAL_USER_LOGIN.trim()) {
+      IS_SELECT_BY_USER = 0;
+    }
 });
 
 socket.on('player choose', function (obj) {

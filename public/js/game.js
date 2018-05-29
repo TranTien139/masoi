@@ -186,7 +186,6 @@ function clickReporter(e) {
                     return false;
                 } else {
                     alert('Bạn không thể chọn');
-                    console.log(GLOBAL_CHOOSE , IS_SELECT_BY_USER );
                     return false;
                 }
 
@@ -257,7 +256,7 @@ socket.on('begin play', function (data) {
     GLOBAL_PLAYER_LIVE = data;
 
   GLOBAL_MAIN_PLAYER.map(function (obj) {
-    if (obj === GLOBAL_USER_LOGIN && obj.charater === 'masoi') {
+    if (obj.user === GLOBAL_USER_LOGIN && obj.charater === 'masoi') {
       IS_WEREWOLF = true;
       IS_SELECT_BY_USER = 0;
     }
