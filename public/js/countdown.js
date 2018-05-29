@@ -151,7 +151,6 @@ function RunTimeCountDown(delay_time) {
 
 function InPlayGame(){
     if(GLOBAL_CHOOSE === 0 && IS_FINISH === false) {
-
         if(GLOBAL_PLAYER[0] === GLOBAL_USER_LOGIN.trim()) {
             if (GLOBAL_NIGHT_DAY === 'DAY') {
 
@@ -165,7 +164,7 @@ function InPlayGame(){
                 }
 
                 for (var k = 0; k < GLOBAL_PLAYER_LIVE.length; k++) {
-                    if (GLOBAL_PLAYER_LIVE[k].user === GLOBAL_USER_LOGIN) {
+                    if (GLOBAL_PLAYER_LIVE[k].user !== GLOBAL_USER_LOGIN) {
                         if (GLOBAL_PLAYER_LIVE[k].charater !== 'masoi') {
                             var random = generateRandom(0, GLOBAL_PLAYER_LIVE.length, [k]);
                             if (GLOBAL_PLAYER_CHOOSE[GLOBAL_PLAYER_LIVE[random].user] === undefined) {
@@ -233,7 +232,6 @@ function InPlayGame(){
             });
         }
         RunTimeCountDown(15000);
-        GLOBAL_CHOOSE = 1;
     }
 
     if(IS_FINISH === true){
@@ -252,21 +250,23 @@ socket.on('count down', function (data) {
 });
 
 socket.on('ramdom choose', function (data) {
+    GLOBAL_CHOOSE = 1;
     GLOBAL_PLAYER_CHOOSE = data;
 });
 
 socket.on('player choose', function (obj) {
     if(GLOBAL_PLAYER_CHOOSE[obj.name] === undefined){
-        GLOBAL_PLAYER_CHOOSE[obj.name] === [obj.user];
+        GLOBAL_PLAYER_CHOOSE[obj.name] = [obj.user];
     } else {
-        GLOBAL_PLAYER_CHOOSE[obj.name].push(obj.user);
+        if(GLOBAL_PLAYER_CHOOSE[obj.name].indexOf(obj.user) === -1) {
+          GLOBAL_PLAYER_CHOOSE[obj.name].push(obj.user);
+        }
     }
 });
 
 socket.on('player-live-die', function (obj) {
      GLOBAL_PLAYER_DIE = obj.die;
      GLOBAL_PLAYER_LIVE = obj.live;
-    console.log(GLOBAL_PLAYER_CHOOSE,GLOBAL_PLAYER_DIE, GLOBAL_PLAYER_LIVE);
 });
 
 

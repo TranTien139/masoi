@@ -171,15 +171,8 @@ function clickReporter(e) {
 
         if (check.length > 0) {
             var name = check[0].name;
-            if (GLOBAL_PLAYER_CHOOSE[name] === undefined) {
-                GLOBAL_PLAYER_CHOOSE[name] = [GLOBAL_USER_LOGIN];
-                IS_SELECT_BY_USER = 1;
-            } else {
-                GLOBAL_PLAYER_CHOOSE[name].push(GLOBAL_USER_LOGIN);
-                IS_SELECT_BY_USER = 1;
-            }
-            
             socket.emit('player choose',{name: name, user: GLOBAL_USER_LOGIN}, function (value) {});
+            IS_SELECT_BY_USER = 1;
             alert('Bạn đã chọn: ' + name);
             return false;
         }
@@ -190,12 +183,16 @@ function clickReporter(e) {
             } else if (IS_SELECT_BY_USER === 1) {
                 if (GLOBAL_NIGHT_DAY === 'NIGHT' && IS_WEREWOLF !== true) {
                     alert('Bạn không được chọn thời điểm ban đêm');
+                    return false;
                 } else {
                     alert('Bạn không thể chọn');
+                    console.log(GLOBAL_CHOOSE , IS_SELECT_BY_USER );
+                    return false;
                 }
 
             } else if (GLOBAL_PLAYER_DIE.indexOf(GLOBAL_USER_LOGIN) !== -1) {
                 alert('Bạn die rồi nên không được chọn nữa');
+                return false;
             }
         }
     }
@@ -258,6 +255,14 @@ function BeginGame() {
 socket.on('begin play', function (data) {
     GLOBAL_MAIN_PLAYER = data;
     GLOBAL_PLAYER_LIVE = data;
+
+  GLOBAL_MAIN_PLAYER.map(function (obj) {
+    if (obj === GLOBAL_USER_LOGIN && obj.charater === 'masoi') {
+      IS_WEREWOLF = true;
+      IS_SELECT_BY_USER = 0;
+    }
+  });
+
     updateStateGame(data);
 });
 
